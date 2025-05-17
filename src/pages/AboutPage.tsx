@@ -1,4 +1,3 @@
-
 import React from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -6,7 +5,7 @@ import PageHeader from '../components/PageHeader';
 import SectionTitle from '../components/SectionTitle';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Award } from 'lucide-react';
+import { CheckCircle, Award, Shield, Lightbulb, Users } from 'lucide-react';
 
 const AboutPage = () => {
   return (
