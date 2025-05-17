@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect, useRef } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import PageHeader from '../components/PageHeader';
@@ -6,10 +7,51 @@ import SectionTitle from '../components/SectionTitle';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Award, Shield, Lightbulb, Users } from 'lucide-react';
+import Card3D from '../components/Card3D';
 
 const AboutPage = () => {
+  const companyOverviewRef = useRef<HTMLDivElement>(null);
+  const valuesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    
+    // Observer for fade-in-up animation
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const createObserver = (ref: React.RefObject<HTMLElement>, animationClass: string) => {
+      if (!ref.current) return;
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(animationClass);
+          }
+        });
+      }, observerOptions);
+      
+      observer.observe(ref.current);
+      observers.push(observer);
+    };
+    
+    if (companyOverviewRef.current) {
+      createObserver(companyOverviewRef, 'animate-fade-in');
+    }
+    
+    if (valuesRef.current) {
+      createObserver(valuesRef, 'animate-fade-in');
+    }
+    
+    return () => {
+      observers.forEach(observer => observer.disconnect());
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col perspective-1000">
       <NavBar />
       
       <PageHeader 
@@ -23,17 +65,19 @@ const AboutPage = () => {
       />
       
       {/* Company Overview */}
-      <section className="py-20">
+      <section className="py-20" ref={companyOverviewRef}>
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <img 
-                src="https://images.unsplash.com/photo-1496307653780-42ee777d4833"
-                alt="Nazbel Group Headquarters" 
-                className="rounded-lg shadow-xl"
-              />
+            <div className="transform hover:scale-105 transition-transform duration-500">
+              <Card3D>
+                <img 
+                  src="https://images.unsplash.com/photo-1496307653780-42ee777d4833"
+                  alt="Nazbel Group Headquarters" 
+                  className="rounded-lg shadow-xl"
+                />
+              </Card3D>
             </div>
-            <div>
+            <div className="transform hover:-translate-y-2 transition-all duration-500">
               <SectionTitle 
                 title="Our Story"
                 subtitle="Founded in 2005, Nazbel Group has grown to become a leading engineering conglomerate in Bangladesh."
@@ -45,26 +89,30 @@ const AboutPage = () => {
                 to quality, innovation, and customer satisfaction has been the driving force behind our success.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className="flex items-start">
-                  <CheckCircle size={20} className="text-nazbel-green mr-2 mt-1" />
-                  <div>
-                    <h4 className="font-semibold mb-1">Our Mission</h4>
-                    <p className="text-sm text-gray-600">To deliver innovative engineering solutions that meet the highest standards of safety and quality.</p>
+                <Card3D className="bg-white p-4 rounded-lg shadow-lg" intensity={10}>
+                  <div className="flex items-start">
+                    <CheckCircle size={20} className="text-nazbel-green mr-2 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Our Mission</h4>
+                      <p className="text-sm text-gray-600">To deliver innovative engineering solutions that meet the highest standards of safety and quality.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start">
-                  <CheckCircle size={20} className="text-nazbel-green mr-2 mt-1" />
-                  <div>
-                    <h4 className="font-semibold mb-1">Our Vision</h4>
-                    <p className="text-sm text-gray-600">To be the leading engineering conglomerate in South Asia, recognized for excellence and innovation.</p>
+                </Card3D>
+                <Card3D className="bg-white p-4 rounded-lg shadow-lg" intensity={10}>
+                  <div className="flex items-start">
+                    <CheckCircle size={20} className="text-nazbel-green mr-2 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Our Vision</h4>
+                      <p className="text-sm text-gray-600">To be the leading engineering conglomerate in South Asia, recognized for excellence and innovation.</p>
+                    </div>
                   </div>
-                </div>
+                </Card3D>
               </div>
               <div className="flex space-x-4">
-                <Button asChild className="btn-primary">
+                <Button asChild className="btn-primary transform hover:translate-y-[-4px] hover:shadow-lg transition-all duration-300">
                   <Link to="/about/story-mission">Read Our Full Story</Link>
                 </Button>
-                <Button asChild className="btn-outline">
+                <Button asChild className="btn-outline transform hover:translate-y-[-4px] hover:shadow-lg transition-all duration-300">
                   <Link to="/contact">Contact Us</Link>
                 </Button>
               </div>
@@ -74,7 +122,7 @@ const AboutPage = () => {
       </section>
       
       {/* Values */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50" ref={valuesRef}>
         <div className="container mx-auto">
           <SectionTitle 
             title="Our Core Values"
@@ -82,7 +130,7 @@ const AboutPage = () => {
           />
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-8 rounded-lg shadow-md text-center">
               <div className="bg-nazbel-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Shield className="text-nazbel-red" size={32} />
               </div>
@@ -90,9 +138,9 @@ const AboutPage = () => {
               <p className="text-gray-600">
                 Safety is our top priority in all operations, ensuring the wellbeing of our employees, clients, and the environment.
               </p>
-            </div>
+            </Card3D>
             
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-8 rounded-lg shadow-md text-center">
               <div className="bg-nazbel-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Lightbulb className="text-nazbel-red" size={32} />
               </div>
@@ -100,9 +148,9 @@ const AboutPage = () => {
               <p className="text-gray-600">
                 We continuously seek innovative solutions to address complex challenges and drive industry advancements.
               </p>
-            </div>
+            </Card3D>
             
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-8 rounded-lg shadow-md text-center">
               <div className="bg-nazbel-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Award className="text-nazbel-red" size={32} />
               </div>
@@ -110,9 +158,9 @@ const AboutPage = () => {
               <p className="text-gray-600">
                 We strive for excellence in every aspect of our work, delivering the highest quality solutions to our clients.
               </p>
-            </div>
+            </Card3D>
             
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-8 rounded-lg shadow-md text-center">
               <div className="bg-nazbel-red/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Users className="text-nazbel-red" size={32} />
               </div>
@@ -120,11 +168,11 @@ const AboutPage = () => {
               <p className="text-gray-600">
                 We conduct our business with the highest ethical standards, honesty, and transparency.
               </p>
-            </div>
+            </Card3D>
           </div>
           
           <div className="text-center mt-12">
-            <Button asChild className="btn-secondary">
+            <Button asChild className="btn-secondary transform hover:translate-y-[-4px] hover:shadow-lg transition-all duration-300">
               <Link to="/about/values">Learn More About Our Values</Link>
             </Button>
           </div>
@@ -140,7 +188,7 @@ const AboutPage = () => {
           />
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="mb-6">
                 <img 
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a" 
@@ -153,9 +201,9 @@ const AboutPage = () => {
               <p className="text-gray-600 mb-4">
                 With over 25 years of industry experience, Mohammed leads Nazbel Group with a vision for innovation and excellence.
               </p>
-            </div>
+            </Card3D>
             
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="mb-6">
                 <img 
                   src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2" 
@@ -168,9 +216,9 @@ const AboutPage = () => {
               <p className="text-gray-600 mb-4">
                 Fatima oversees operations across all business units, ensuring efficiency and quality in service delivery.
               </p>
-            </div>
+            </Card3D>
             
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <Card3D className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="mb-6">
                 <img 
                   src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" 
@@ -183,11 +231,11 @@ const AboutPage = () => {
               <p className="text-gray-600 mb-4">
                 Karim drives technological innovation at Nazbel Group, leading our digital transformation initiatives.
               </p>
-            </div>
+            </Card3D>
           </div>
           
           <div className="text-center mt-12">
-            <Button asChild className="btn-primary">
+            <Button asChild className="btn-primary transform hover:translate-y-[-4px] hover:shadow-lg transition-all duration-300">
               <Link to="/about/leadership">View Full Leadership Team</Link>
             </Button>
           </div>

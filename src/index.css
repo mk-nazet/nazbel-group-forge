@@ -86,6 +86,15 @@
   .container {
     @apply px-4 md:px-6 lg:px-8;
   }
+  
+  /* 3D effects and animations */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
 }
 
 @layer components {
@@ -107,5 +116,70 @@
   
   .section-subtitle {
     @apply text-xl text-gray-600 mb-12 max-w-2xl mx-auto;
+  }
+  
+  /* 3D Card and Button effects */
+  .card-3d {
+    @apply relative transition-transform duration-300;
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+  }
+  
+  .card-3d:hover {
+    transform: perspective(1000px) translateZ(20px);
+  }
+  
+  .btn-3d {
+    @apply relative transition-transform duration-300 transform;
+    transform-style: preserve-3d;
+  }
+  
+  .btn-3d:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    transform: perspective(1000px) rotateY(-15deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(1000px) rotateY(0);
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .animate-floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .animate-rotate-in {
+    animation: rotateIn 0.8s ease-out forwards;
+    opacity: 0;
   }
 }
